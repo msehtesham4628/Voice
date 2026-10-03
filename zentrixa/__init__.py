@@ -1,0 +1,1 @@
+"""Zentrixa local assistant core."""
