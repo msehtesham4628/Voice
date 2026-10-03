@@ -1,5 +1,6 @@
 package com.zentrixa.skills
 
+import android.content.Context
 import com.zentrixa.memory.MemoryStore
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -7,8 +8,14 @@ import java.util.Locale
 
 interface LocalSkill { fun matches(text: String): Boolean; fun run(text: String): String }
 
-class LocalSkillRouter(memory: MemoryStore) {
-    private val skills = listOf(GreetingSkill(), TimeSkill(), MemorySkill(memory))
+class LocalSkillRouter(private val memory: MemoryStore, private val context: Context? = null) {
+    private val skills = buildList {
+        add(GreetingSkill())
+        add(TimeSkill())
+        add(MemorySkill(memory))
+        if (context != null) add(PhoneSkill(context))
+    }
+
     fun route(text: String): String? = skills.firstOrNull { it.matches(text) }?.run(text)
 }
 
