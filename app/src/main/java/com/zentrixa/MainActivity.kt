@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.zentrixa.core.ZentrixaEngine
-import com.zentrixa.memory.MemoryStore
 import com.zentrixa.voice.SpeechController
 import com.zentrixa.voice.TtsController
 
@@ -23,7 +22,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        engine = ZentrixaEngine(MemoryStore(this))
+        engine = ZentrixaEngine(this)
         speech = SpeechController(this)
         tts = TtsController(this)
         input = findViewById(R.id.input)
