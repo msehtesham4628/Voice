@@ -1,0 +1,2 @@
+# Core currently uses only Python standard library.
+# Local model, speech, and Android dependencies will be added as adapters.
