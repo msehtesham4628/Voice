@@ -11,6 +11,8 @@ import android.widget.TextView
 import com.zentrixa.core.ZentrixaEngine
 import com.zentrixa.voice.SpeechController
 import com.zentrixa.voice.TtsController
+import com.zentrixa.model.ModelPicker
+import com.zentrixa.model.ModelRepository
 
 class MainActivity : Activity() {
     private lateinit var engine: ZentrixaEngine
@@ -18,6 +20,7 @@ class MainActivity : Activity() {
     private lateinit var tts: TtsController
     private lateinit var input: EditText
     private lateinit var chat: TextView
+    private lateinit var modelRepository: ModelRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,10 +28,12 @@ class MainActivity : Activity() {
         engine = ZentrixaEngine(this)
         speech = SpeechController(this)
         tts = TtsController(this)
+        modelRepository = ModelRepository(this)
         input = findViewById(R.id.input)
         chat = findViewById(R.id.chat)
         findViewById<Button>(R.id.send).setOnClickListener { send(input.text.toString()) }
         findViewById<Button>(R.id.mic).setOnClickListener { listen() }
+        findViewById<Button>(R.id.model).setOnClickListener { ModelPicker.open(this) }
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 10)
         append("Zentrixa", "Online. Local-first mode is ready.")
@@ -46,6 +51,11 @@ class MainActivity : Activity() {
     private fun listen() { speech.listen(::send) { append("Zentrixa", it) } }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ModelPicker.REQUEST_CODE && resultCode == RESULT_OK && data?.data != null) {
+            val file = modelRepository.import(data.data!!, contentResolver)
+            append("Zentrixa", "Imported local model: " + file.name)
+            return
+        }
         if (!speech.onActivityResult(requestCode, resultCode, data)) super.onActivityResult(requestCode, resultCode, data)
     }
 
