@@ -1,10 +1,12 @@
 package com.zentrixa.core
 
+import android.content.Context
 import com.zentrixa.memory.MemoryStore
 import com.zentrixa.skills.LocalSkillRouter
 
-class ZentrixaEngine(private val memory: MemoryStore) {
-    private val router = LocalSkillRouter(memory)
+class ZentrixaEngine(context: Context) {
+    private val memory = MemoryStore(context)
+    private val router = LocalSkillRouter(memory, context)
 
     fun handle(text: String): String {
         memory.add("user", text)
@@ -17,8 +19,8 @@ class ZentrixaEngine(private val memory: MemoryStore) {
         text.lowercase().contains("who are you") ->
             "I'm Zentrixa, your private local assistant. I run without Gemini or OpenAI."
         text.lowercase().contains("what can you do") ->
-            "I can talk, remember local context, use phone skills, and grow through local skills."
+            "I can talk, remember local context, and use installed local phone skills."
         else ->
-            "I heard you. The local model runtime is the next layer; no cloud AI is required."
+            "I heard you. Connect a GGUF local model to the inference layer for full natural-language reasoning."
     }
 }
